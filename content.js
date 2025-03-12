@@ -5,11 +5,7 @@ chrome.storage.sync.get(["nomColor", "adjColor"], (data) => {
     // Fonction pour convertir une couleur hexadécimale en RGB
     function hexToRgb(hex) {
         let r = 0, g = 0, b = 0;
-        if (hex.length === 4) {
-            r = parseInt(hex[1] + hex[1], 16);
-            g = parseInt(hex[2] + hex[2], 16);
-            b = parseInt(hex[3] + hex[3], 16);
-        } else if (hex.length === 7) {
+        if (hex.length == 7) { // Format long
             r = parseInt(hex[1] + hex[2], 16);
             g = parseInt(hex[3] + hex[4], 16);
             b = parseInt(hex[5] + hex[6], 16);
@@ -19,9 +15,9 @@ chrome.storage.sync.get(["nomColor", "adjColor"], (data) => {
 
     // Fonction pour calculer la luminance d'une couleur
     function getLuminance(color) {
-        let rgb = color.match(/\d+/g);
+        let rgb = color.match(/\d+/g); //Permet de récuperer [ 000, 000, 000 ]
         if (rgb) {
-            rgb = rgb.map(val => {
+            rgb = rgb.map(val => { //Map sert à tout transformer en tableau (pour 000, 120, 44)
                 val = val / 255;
                 return val <= 0.03928 ? val / 12.92 : Math.pow((val + 0.055) / 1.055, 2.4);
             });
