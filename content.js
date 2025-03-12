@@ -6,7 +6,7 @@ chrome.storage.sync.get(["nomColor", "adjColor"], (data) => {
     // Fonction pour convertir une couleur hexadécimale en RGB
     function hexToRgb(hex) {
         let r = 0, g = 0, b = 0;
-        if (hex.length == 7) { // Format long
+        if (hex.length == 7) {
             r = parseInt(hex[1] + hex[2], 16);
             g = parseInt(hex[3] + hex[4], 16);
             b = parseInt(hex[5] + hex[6], 16);
