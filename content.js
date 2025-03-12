@@ -1,6 +1,7 @@
 chrome.storage.sync.get(["nomColor", "adjColor"], (data) => {
     let nomColor = data.nomColor || "#ff0000";  // Rouge par défaut
     let adjColor = data.adjColor || "#0000ff";  // Bleu par défaut
+    let verbeColor = data.verbeColor || "#00ff00";  // Vert par défaut
 
     // Fonction pour convertir une couleur hexadécimale en RGB
     function hexToRgb(hex) {
@@ -32,6 +33,7 @@ chrome.storage.sync.get(["nomColor", "adjColor"], (data) => {
             let fragment = document.createDocumentFragment();
             let luminanceNom = getLuminance(hexToRgb(nomColor));
             let luminanceAdj = getLuminance(hexToRgb(adjColor));
+            let luminanceVerbe = getLuminance(hexToRgb(verbeColor));
 
             words.forEach(word => {
                 let span = document.createElement("span");
@@ -41,6 +43,7 @@ chrome.storage.sync.get(["nomColor", "adjColor"], (data) => {
                     span.style.backgroundColor = nomColor;
                     span.style.padding = "2px";  // Ajoute un peu d'espace pour le visuel
                     span.style.borderRadius = "3px";
+                    
                     if (luminanceNom < 0.5) {
                         span.style.color = "white";
                     } else {
@@ -51,7 +54,18 @@ chrome.storage.sync.get(["nomColor", "adjColor"], (data) => {
                     span.style.backgroundColor = adjColor;
                     span.style.padding = "2px";  // Ajoute un peu d'espace pour le visuel
                     span.style.borderRadius = "3px";
+
                     if (luminanceAdj < 0.5) {
+                        span.style.color = "white";
+                    } else {
+                        span.style.color = "black"; // Sinon texte noir
+                    }
+                } else if (/\b(aime|joue|marche)\b/i.test(word)) {
+                    span.style.backgroundColor = verbeColor;
+                    span.style.padding = "2px";  // Ajoute un peu d'espace pour le visuel
+                    span.style.borderRadius = "3px";
+
+                    if (luminanceVerbe < 0.5) {
                         span.style.color = "white";
                     } else {
                         span.style.color = "black"; // Sinon texte noir

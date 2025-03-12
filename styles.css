@@ -6,8 +6,24 @@ body {
     padding: 10px;
 }
 
+div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* Espace entre les paragraphes */
+}
+div span {
+    text-align: center;
+    width: 50px; /* Largeur fixe pour le texte */
+    flex-shrink: 0; /* Empêche le texte de rétrécir */
+}
+div input[type="color"] {
+    margin-left: 10px; /* Espace entre le texte et l'input */
+    flex: 1; /* L'input prend toute la place restante */
+}
+
 h1 {
     font-size: 16px;
+    text-align: center;
 }
 
 label {
