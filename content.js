@@ -3,20 +3,24 @@ chrome.storage.sync.get(["nomColor", "adjColor"], (data) => {
     let adjColor = data.adjColor || "#0000ff";  // Bleu par défaut
 
     function colorizeText(node) {
-        if (node.nodeType === 3) { // Si c'est du texte
-            let words = node.nodeValue.split(" ");
-            let newHTML = words.map(word => {
-                if (word.match(/(chat|chien|voiture)/i)) { // Remplace ça par ton IA plus tard !
-                    return `<span style="color:${nomColor};">${word}</span>`;
+        if (node.nodeType === 3 && node.nodeValue.trim() !== "") { // Si c'est du texte
+            let words = node.nodeValue.split(/\b/); // Séparation en mots
+            let fragment = document.createDocumentFragment();
+
+            words.forEach(word => {
+                let span = document.createElement("span");
+                span.textContent = word;
+
+                if (/\b(chat|chien|voiture)\b/i.test(word)) { // Mots spécifiques (à remplacer par l'IA)
+                    span.style.color = nomColor;
+                } else if (/\b(beau|grande|intéressant)\b/i.test(word)) {
+                    span.style.color = adjColor;
                 }
-                if (word.match(/(beau|grande|intéressant)/i)) {
-                    return `<span style="color:${adjColor};">${word}</span>`;
-                }
-                return word;
-            }).join(" ");
-            let span = document.createElement("span");
-            span.innerHTML = newHTML;
-            node.replaceWith(span);
+
+                fragment.appendChild(span);
+            });
+
+            node.replaceWith(fragment);
         } else {
             node.childNodes.forEach(colorizeText);
         }
