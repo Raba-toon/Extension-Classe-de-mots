@@ -1,12 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "Coloration Grammaticale",
-  "version": "1.0",
-  "description": "Colore automatiquement les classes grammaticales sur une page web.",
+  "name": "Classe de mots",
+  "version": "1.2",
+  "description": "Donnez des couleurs à vos mots, et de la clarté à vos idées.",
   "permissions": ["activeTab", "storage", "scripting"],
   "host_permissions": ["<all_urls>"],
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "img/logo.png",
+      "48": "img/logo.png",
+      "128": "img/logo.png"
+    }
   },
   "content_scripts": [
     {
