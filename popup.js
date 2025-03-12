@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let verbeColor = verbeColorInput.value;
 
         chrome.storage.sync.set({ nomColor, adjColor, verbeColor }, () => {
-            alert("Couleurs sauvegardées !");
+            window.close();
         });
     });
 });
