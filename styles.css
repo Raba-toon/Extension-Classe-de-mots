@@ -4,19 +4,26 @@ body {
     font-family: Arial, sans-serif;
     width: 200px;
     padding: 10px;
+    background: rgb(188, 188, 188);
+}
+div{
+    padding: 5px 15px 5px 15px;
+    background-color: white;
+    border: 1px gray;
+    border-radius: 3px;
 }
 
-div {
+div div {
     display: flex;
     align-items: center;
     margin-bottom: 10px; /* Espace entre les paragraphes */
 }
-div span {
+div div span {
     text-align: center;
     width: 50px; /* Largeur fixe pour le texte */
     flex-shrink: 0; /* Empêche le texte de rétrécir */
 }
-div input[type="color"] {
+div div input[type="color"] {
     margin-left: 10px; /* Espace entre le texte et l'input */
     flex: 1; /* L'input prend toute la place restante */
 }
@@ -39,4 +46,5 @@ button {
     border: none;
     padding: 5px;
     cursor: pointer;
+    border-radius: 3px;
 }
