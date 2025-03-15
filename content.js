@@ -1,16 +1,13 @@
-chrome.storage.sync.get(["nomColor", "adjColor"], (data) => {
+chrome.storage.sync.get(["nomColor", "adjColor", "verbeColor"], (data) => {
     let nomColor = data.nomColor || "#ff0000";  // Rouge par défaut
     let adjColor = data.adjColor || "#0000ff";  // Bleu par défaut
     let verbeColor = data.verbeColor || "#00ff00";  // Vert par défaut
 
     // Fonction pour convertir une couleur hexadécimale en RGB
     function hexToRgb(hex) {
-        let r = 0, g = 0, b = 0;
-        if (hex.length == 7) {
-            r = parseInt(hex[1] + hex[2], 16);
-            g = parseInt(hex[3] + hex[4], 16);
-            b = parseInt(hex[5] + hex[6], 16);
-        }
+        let r = parseInt(hex.substring(1, 3), 16);
+        let g = parseInt(hex.substring(3, 5), 16);
+        let b = parseInt(hex.substring(5, 7), 16);
         return `rgb(${r}, ${g}, ${b})`;
     }
 
@@ -27,59 +24,48 @@ chrome.storage.sync.get(["nomColor", "adjColor"], (data) => {
         return 0; // Si la couleur n'est pas valide
     }
 
-    function colorizeText(node) {
-        if (node.nodeType === 3 && node.nodeValue.trim() !== "") { // Si c'est du texte
-            let words = node.nodeValue.split(/\b/); // Séparation en mots
-            let fragment = document.createDocumentFragment();
-            let luminanceNom = getLuminance(hexToRgb(nomColor));
-            let luminanceAdj = getLuminance(hexToRgb(adjColor));
-            let luminanceVerbe = getLuminance(hexToRgb(verbeColor));
-
-            words.forEach(word => {
-                let span = document.createElement("span");
-                span.textContent = word;
-
-                if (/\b(chat|chien|voiture)\b/i.test(word)) { // Mots spécifiques (à remplacer par l'IA)
-                    span.style.backgroundColor = nomColor;
-                    span.style.padding = "2px";  // Ajoute un peu d'espace pour le visuel
-                    span.style.borderRadius = "3px";
-                    
-                    if (luminanceNom < 0.5) {
-                        span.style.color = "white";
-                    } else {
-                        span.style.color = "black"; // Sinon texte noir
-                    }
-
-                } else if (/\b(beau|grande|intéressant)\b/i.test(word)) {
-                    span.style.backgroundColor = adjColor;
-                    span.style.padding = "2px";  // Ajoute un peu d'espace pour le visuel
-                    span.style.borderRadius = "3px";
-
-                    if (luminanceAdj < 0.5) {
-                        span.style.color = "white";
-                    } else {
-                        span.style.color = "black"; // Sinon texte noir
-                    }
-                } else if (/\b(aime|joue|marche)\b/i.test(word)) {
-                    span.style.backgroundColor = verbeColor;
-                    span.style.padding = "2px";  // Ajoute un peu d'espace pour le visuel
-                    span.style.borderRadius = "3px";
-
-                    if (luminanceVerbe < 0.5) {
-                        span.style.color = "white";
-                    } else {
-                        span.style.color = "black"; // Sinon texte noir
-                    }
-                }
-
-                fragment.appendChild(span);
-            });
-
-            node.replaceWith(fragment);
-        } else {
-            node.childNodes.forEach(colorizeText);
-        }
+    function createColoredSpan(word, color) {
+        let span = document.createElement("span");
+        span.textContent = word;
+        span.style.backgroundColor = color;
+        span.style.padding = "2px";
+        span.style.borderRadius = "3px";
+        span.style.color = getLuminance(hexToRgb(color)) < 0.5 ? "white" : "black";
+        return span;
     }
 
-    document.body.childNodes.forEach(colorizeText);
+    function processTextNode(node) {
+        if (node.nodeType !== 3 || !node.nodeValue.trim()) return;
+
+        let words = node.nodeValue.split(/\b/);
+        let fragment = document.createDocumentFragment(); // Cela crée un fragment de document pour éviter de modifier le DOM directement à chaque ajout
+        let changed = false;
+
+        words.forEach(word => {
+            if (/\b(chat|chien|voiture)\b/i.test(word)) {
+                fragment.appendChild(createColoredSpan(word, nomColor));
+                changed = true;
+            } else if (/\b(beau|grande|intéressant)\b/i.test(word)) {
+                fragment.appendChild(createColoredSpan(word, adjColor));
+                changed = true;
+            } else if (/\b(aime|joue|marche)\b/i.test(word)) {
+                fragment.appendChild(createColoredSpan(word, verbeColor));
+                changed = true;
+            } else {
+                fragment.appendChild(document.createTextNode(word)); // On garde le mot tel quel
+            }
+        });
+
+        if (changed) node.replaceWith(fragment);
+    }
+
+    // Fonction pour parcourir tous les nœuds du DOM
+    function scanTextNodes(node) {
+       if (!node || node.nodeType !== 1){
+            return;  // Si le nœud n'est pas un élément, on l'ignore
+       }
+        node.childNodes.forEach(processTextNode);  // Parcourt les enfants du nœud et traite chaque nœud de texte
+    }
+
+    document.body.childNodes.forEach(scanTextNodes);
 });
