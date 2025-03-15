@@ -37,35 +37,43 @@ chrome.storage.sync.get(["nomColor", "adjColor", "verbeColor"], (data) => {
     function processTextNode(node) {
         if (node.nodeType !== 3 || !node.nodeValue.trim()) return;
 
-        let words = node.nodeValue.split(/\b/);
-        let fragment = document.createDocumentFragment(); // Cela crée un fragment de document pour éviter de modifier le DOM directement à chaque ajout
-        let changed = false;
+        let words = node.nodeValue.split(/(\s+)/); // Sépare en conservant les espaces
+        let fragment = document.createDocumentFragment();
+        let modified = false;
 
         words.forEach(word => {
-            if (/\b(chat|chien|voiture)\b/i.test(word)) {
+            let trimmedWord = word.trim();
+
+            if (/^(chat|chien|voiture)$/i.test(trimmedWord)) {
                 fragment.appendChild(createColoredSpan(word, nomColor));
-                changed = true;
-            } else if (/\b(beau|grande|intéressant)\b/i.test(word)) {
+                modified = true;
+            } else if (/^(beau|grande|intéressant)$/i.test(trimmedWord)) {
                 fragment.appendChild(createColoredSpan(word, adjColor));
-                changed = true;
-            } else if (/\b(aime|joue|marche)\b/i.test(word)) {
+                modified = true;
+            } else if (/^(aime|joue|marche)$/i.test(trimmedWord)) {
                 fragment.appendChild(createColoredSpan(word, verbeColor));
-                changed = true;
+                modified = true;
             } else {
-                fragment.appendChild(document.createTextNode(word)); // On garde le mot tel quel
+                fragment.appendChild(document.createTextNode(word)); // On garde le mot original sans le modifier
             }
         });
 
-        if (changed) node.replaceWith(fragment);
+        if (modified) {
+            node.replaceWith(fragment);
+        }
     }
 
     // Fonction pour parcourir tous les nœuds du DOM
     function scanTextNodes(node) {
-       if (!node || node.nodeType !== 1){
-            return;  // Si le nœud n'est pas un élément, on l'ignore
-       }
-        node.childNodes.forEach(processTextNode);  // Parcourt les enfants du nœud et traite chaque nœud de texte
+        if (!node || node.nodeType !== 1) return; // Si le nœud n'est pas un élément, on l'ignore
+        node.childNodes.forEach(child => { // Parcourt les enfants du nœud et traite chaque nœud de texte
+            if (child.nodeType === 3) {
+                processTextNode(child);
+            } else {
+                scanTextNodes(child);
+            }
+        });
     }
 
-    document.body.childNodes.forEach(scanTextNodes);
+    scanTextNodes(document.body);
 });

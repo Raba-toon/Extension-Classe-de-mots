@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Classe de mots",
-  "version": "1.2",
+  "version": "1.3",
   "description": "Donnez des couleurs à vos mots, et de la clarté à vos idées.",
   "permissions": ["activeTab", "storage", "scripting"],
   "host_permissions": ["<all_urls>"],
