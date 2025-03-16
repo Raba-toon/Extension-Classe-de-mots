@@ -5,23 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coloration Grammaticale</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="popup.js"></script>
+    <script defer src="popup.js"></script>
 </head>
 <body>
     <div>
         <h1>Choisissez les couleurs</h1>
+        
         <div>
+            <input type="checkbox" id="enableNom">
             <span>Nom :</span>
             <input type="color" id="nomColor" value="#ff0000">
         </div>
+
         <div>
+            <input type="checkbox" id="enableAdj">
             <span>Adjectif :</span>
             <input type="color" id="adjColor" value="#0000ff">
         </div>
+
         <div>
+            <input type="checkbox" id="enableVerbe">
             <span>Verbe :</span>
             <input type="color" id="verbeColor" value="#00ff00">
         </div>
+        
         <button id="save">Sauvegarder</button>
     </div>
 </body>
