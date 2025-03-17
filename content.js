@@ -3,9 +3,9 @@ chrome.storage.sync.get(["nomColor", "adjColor", "verbeColor", "enableNom", "ena
     let adjColor = data.adjColor || "#0000ff";  // Bleu par défaut
     let verbeColor = data.verbeColor || "#00ff00";  // Vert par défaut
 
-    let enableNom = data.enableNom;
-    let enableAdj = data.enableAdj;
-    let enableVerbe = data.enableVerbe;
+    //let enableNom = data.enableNom;
+    //let enableAdj = data.enableAdj;
+    //let enableVerbe = data.enableVerbe;
 
     // Fonction pour convertir une couleur hexadécimale en RGB
     function hexToRgb(hex) {
@@ -49,13 +49,13 @@ chrome.storage.sync.get(["nomColor", "adjColor", "verbeColor", "enableNom", "ena
             let trimmedWord = word.trim(); // On supprime les espaces
             trimmedWord = word.replace(/[.,!?;:()«»"']/g, ""); // Supprime la ponctuation
 
-            if (/^(chat|chien|voiture)$/i.test(trimmedWord) && enableNom) {
+            if (/^(chat|chien|voiture)$/i.test(trimmedWord)) {
                 fragment.appendChild(createColoredSpan(word, nomColor));
                 modified = true;
-            } else if (/^(beau|grande|intéressant)$/i.test(trimmedWord) && enableAdj) {
+            } else if (/^(beau|grande|intéressant)$/i.test(trimmedWord)) {
                 fragment.appendChild(createColoredSpan(word, adjColor));
                 modified = true;
-            } else if (/^(aime|joue|marche)$/i.test(trimmedWord) && enableVerbe) {
+            } else if (/^(aime|joue|marche)$/i.test(trimmedWord)) {
                 fragment.appendChild(createColoredSpan(word, verbeColor));
                 modified = true;
             } else {
